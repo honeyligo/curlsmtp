@@ -6,28 +6,20 @@
 #include <curl/curl.h>
 #include "ustd_string.h"
 
-#define USERNAME "bingley_li@maxmob.cn"
-#define PASSWORD "libin123"
-#define SMTP_SERVER "smtp.exmail.qq.com"
-#define SMTP_PORT "587" /* it is a colon+port string, but you can set it
-                           to "" to use the default port */
-//#define FROM "<bingley_li@maxmob.cn>"
-//#define TO "<honeyligo@sina.com>"
-//#define TO1 "<lybingo@163.com>"
-//#define CC "<godsb@qq.com>"
-//#define ALL "<all@maxmob.com>"
+#define SMTP_SERVER 		"smtp.exmail.qq.com"
+#define SMTP_PORT 		"587"
 
-#define LEFT_BRACE "<"
-#define RIGTH_BRACE ">"
+#define LEFT_BRACE 		"<"
+#define RIGTH_BRACE 		">"
 #define ENTER			"\r\n"
-#define BOUNDARY_FLAG	"--"
+#define BOUNDARY_FLAG		"--"
 
-#define USER_AGENT "User-Agent: My eMail Client"
-#define MIME_VER "MIME-Version: 1.0"
-#define HEADER_CONTENT_TYPE "Content-Type: multipart/mixed;"
+#define USER_AGENT 		"User-Agent: Curl Mail Client"
+#define MIME_VER 		"MIME-Version: 1.0"
+#define HEADER_CONTENT_TYPE 	"Content-Type: multipart/mixed;"
 
-#define MSG_CONTENT_TYPE "Content-Type: text/plain; charset=utf-8; format=flowed"
-#define MSG_ENCODING "Content-Transfer-Encoding: 7bit"
+#define MSG_CONTENT_TYPE 	"Content-Type: text/plain; charset=utf-8; format=flowed"
+#define MSG_ENCODING 		"Content-Transfer-Encoding: 7bit"
 
 class CurlSmtp
 {
