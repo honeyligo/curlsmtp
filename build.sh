@@ -1,0 +1,1 @@
+g++ -o test curlsmtp.cpp main.cpp -lcurl -std=c++11 -g
