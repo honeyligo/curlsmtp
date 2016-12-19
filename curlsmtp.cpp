@@ -257,7 +257,6 @@ void CurlSmtp::set_curl_option()
 	curl_easy_setopt(curl_, CURLOPT_SSLVERSION, 0L);
 	curl_easy_setopt(curl_, CURLOPT_SSL_SESSIONID_CACHE, 0L);
 	curl_easy_setopt(curl_, CURLOPT_UPLOAD, 1L);
-	curl_easy_setopt(curl_, CURLOPT_POSTFIELDSIZE_LARGE, 102400);
 }
 
 void CurlSmtp::make_send_message()
