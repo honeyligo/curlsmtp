@@ -6,20 +6,8 @@
 #include <curl/curl.h>
 #include "ustd_string.h"
 
-#define SMTP_SERVER 		"smtp.exmail.qq.com"
-#define SMTP_PORT 		"587"
-
-#define LEFT_BRACE 		"<"
-#define RIGTH_BRACE 		">"
-#define ENTER			"\r\n"
-#define BOUNDARY_FLAG		"--"
-
-#define USER_AGENT 		"User-Agent: Curl Mail Client"
-#define MIME_VER 		"MIME-Version: 1.0"
-#define HEADER_CONTENT_TYPE 	"Content-Type: multipart/mixed;"
-
-#define MSG_CONTENT_TYPE 	"Content-Type: text/plain; charset=utf-8; format=flowed"
-#define MSG_ENCODING 		"Content-Transfer-Encoding: 7bit"
+#define SMTP_SERVER				"smtp.exmail.qq.com"
+#define SMTP_PORT				"587"
 
 class CurlSmtp
 {
@@ -45,11 +33,17 @@ public:
 	~CurlSmtp();
 
 	void set_from(const std::string& from);
+	void set_password(const std::string& password);
 	void set_to(const std::vector<std::string>& to);
 	void set_secret(const std::vector<std::string>& secret);
 	void set_cc(const std::vector<std::string>& cc);
-	void set_from(const std::vector<std::string>& from);
 	void set_attach(const std::vector<std::string>& attach);
+	void set_subject(const std::string& subject);
+	void set_message(const std::string& message);
+	void set_server(const std::string& server);
+	void set_port(const std::string& port);
+
+
 	void send_mail();
 
 private:
@@ -57,6 +51,7 @@ private:
 	bool attach(const std::string& filename);
 	void set_receiver_list();
 	void set_curl_option();
+	void clear();
 	static size_t read_callback(void *ptr, size_t size, size_t nmemb, void *userp);
 
 	std::string get_boundary()

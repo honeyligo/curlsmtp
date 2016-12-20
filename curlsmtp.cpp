@@ -1,8 +1,20 @@
 #include <fstream>
 #include "curlsmtp.h"
 
-#define MULTI_PERFORM_HANG_TIMEOUT 60 * 1000
-#define CHUNCK_SIZE	1024 * 10
+#define LEFT_BRACE					"<"
+#define RIGTH_BRACE					">"
+#define ENTER						"\r\n"
+#define BOUNDARY_FLAG				"--"
+
+#define USER_AGENT					"User-Agent: Mail Client"
+#define MIME_VER					"MIME-Version: 1.0"
+#define HEADER_CONTENT_TYPE			"Content-Type: multipart/mixed;"
+
+#define MSG_CONTENT_TYPE			"Content-Type: text/plain; charset=utf-8; format=flowed"
+#define MSG_ENCODING				"Content-Transfer-Encoding: 7bit"
+
+#define MULTI_PERFORM_HANG_TIMEOUT	60 * 1000
+#define CHUNCK_SIZE					1024 * 10
 
 size_t CurlSmtp::read_callback(void *ptr, size_t size, size_t nmemb, void *userp)
 {
@@ -72,10 +84,11 @@ CurlSmtp::CurlSmtp(const std::string& from,
 	, port_(port)
 	, message_(message)
 	, attach_(attach)
+	, rcpt_list_(NULL)
+	, mcurl_(curl_multi_init())
+	, curl_(curl_easy_init())
 {
 	curl_global_init(CURL_GLOBAL_DEFAULT);
-	mcurl_ = curl_multi_init();
-	curl_ = curl_easy_init();
 }
 
 CurlSmtp::~CurlSmtp()
@@ -87,8 +100,12 @@ CurlSmtp::~CurlSmtp()
 
 void CurlSmtp::set_from(const std::string& from)
 {
-	from_.clear();
 	from_.assign(from);
+}
+
+void CurlSmtp::set_password(const std::string& password)
+{
+	password_.assign(password);
 }
 
 void CurlSmtp::set_to(const std::vector<std::string>& to)
@@ -113,6 +130,26 @@ void CurlSmtp::set_attach(const std::vector<std::string>& attach)
 {
 	attach_.resize(attach.size());
 	attach_.assign(attach.begin(), attach.end());
+}
+
+void CurlSmtp::set_subject(const std::string& subject)
+{
+	subject_.assign(subject);
+}
+
+void CurlSmtp::set_message(const std::string& message)
+{
+	message_.assign(message);
+}
+
+void CurlSmtp::set_server(const std::string& server)
+{
+	server_.assign(server);
+}
+
+void CurlSmtp::set_port(const std::string& port)
+{
+	port_.assign(port);
 }
 
 void CurlSmtp::send_mail()
@@ -182,6 +219,7 @@ void CurlSmtp::send_mail()
 		}
 	}
 	curl_multi_remove_handle(mcurl_, curl_);
+	clear();
 }
 
 bool CurlSmtp::attach(const std::string& filename)
@@ -222,8 +260,6 @@ bool CurlSmtp::attach(const std::string& filename)
 
 void CurlSmtp::set_receiver_list()
 {
-	curl_slist_free_all(rcpt_list_);
-
 	for (int i = 0; i < to_.size(); i++)
 	{
 		rcpt_list_ = curl_slist_append(rcpt_list_, std::string(LEFT_BRACE + to_[i] + RIGTH_BRACE).c_str());
@@ -259,6 +295,27 @@ void CurlSmtp::set_curl_option()
 	curl_easy_setopt(curl_, CURLOPT_SSLVERSION, 0L);
 	curl_easy_setopt(curl_, CURLOPT_SSL_SESSIONID_CACHE, 0L);
 	curl_easy_setopt(curl_, CURLOPT_UPLOAD, 1L);
+}
+
+void CurlSmtp::clear()
+{
+	from_.clear();
+	password_.clear();
+	to_.clear();
+	cc_.clear();
+	secret_.clear();
+	attach_.clear();
+	attachment_.clear();
+	subject_.clear();
+	message_.clear();
+	server_.clear();
+	port_.clear();
+
+	if (rcpt_list_ != NULL)
+	{
+		curl_slist_free_all(rcpt_list_);
+		rcpt_list_ = NULL;
+	}
 }
 
 void CurlSmtp::make_send_message()
