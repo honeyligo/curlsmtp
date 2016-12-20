@@ -13,7 +13,8 @@ size_t CurlSmtp::read_callback(void *ptr, size_t size, size_t nmemb, void *userp
     return 0;
 
   const std::string& str = pooh->data[pooh->counter];
-  if(pooh->counter < pooh->data.size()) {
+  if(pooh->counter < pooh->data.size()) 
+  {
 	size_t len = str.size();
 	int size = len - pooh->pos;
 	if (len < CHUNCK_SIZE || size <= CHUNCK_SIZE)
@@ -99,18 +100,23 @@ void CurlSmtp::set_to(const std::vector<std::string>& to)
 
 void CurlSmtp::set_secret(const std::vector<std::string>& secret)
 {
-
+	secret_.clear();
+	secret_.resize(secret.size());
+	memcpy(&secret_[0], &secret[0], secret.size());
 }
 
 void CurlSmtp::set_cc(const std::vector<std::string>& cc)
 {
-
+	cc_.clear();
+	cc_.resize(cc.size());
+	memcpy(&cc_[0], &cc[0], cc.size());
 }
 
 void CurlSmtp::set_attach(const std::vector<std::string>& attach)
 {
 	attach_.clear();
-	attach_ = attach;
+	attach_.resize(attach.size());
+	memcpy(&attach_[0], &attach[0], attach.size());
 }
 
 void CurlSmtp::send_mail()
