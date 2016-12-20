@@ -93,30 +93,26 @@ void CurlSmtp::set_from(const std::string& from)
 
 void CurlSmtp::set_to(const std::vector<std::string>& to)
 {
-	to_.clear();
 	to_.resize(to.size());
-	memcpy(&to_[0], &to[0], to.size());
+	to_.assign(to.begin(), to.end());
 }
 
 void CurlSmtp::set_secret(const std::vector<std::string>& secret)
 {
-	secret_.clear();
 	secret_.resize(secret.size());
-	memcpy(&secret_[0], &secret[0], secret.size());
+	secret_.assign(secret.begin(), secret.end());
 }
 
 void CurlSmtp::set_cc(const std::vector<std::string>& cc)
 {
-	cc_.clear();
 	cc_.resize(cc.size());
-	memcpy(&cc_[0], &cc[0], cc.size());
+	cc_.assign(cc.begin(), cc.end());
 }
 
 void CurlSmtp::set_attach(const std::vector<std::string>& attach)
 {
-	attach_.clear();
 	attach_.resize(attach.size());
-	memcpy(&attach_[0], &attach[0], attach.size());
+	attach_.assign(attach.begin(), attach.end());
 }
 
 void CurlSmtp::send_mail()
