@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string.h>
+#include <unordered_map>
 #include <curl/curl.h>
 #include "ustd_string.h"
 
@@ -86,6 +87,8 @@ private:
 	CURLM *mcurl_;
 	struct curl_slist* rcpt_list_;
 	struct WriteThis pooh_;
+
+	std::unordered_map<std::string, std::string> typeMap_;
 };
 
 #endif // !__CURL_SMTP_H__

@@ -89,6 +89,17 @@ CurlSmtp::CurlSmtp(const std::string& from,
 	, curl_(curl_easy_init())
 {
 	curl_global_init(CURL_GLOBAL_DEFAULT);
+
+	typeMap_.insert(std::make_pair(".gif", "Content-Type: image/gif;"));
+	typeMap_.insert(std::make_pair(".jpg", "Content-Type: image/jpg;"));
+	typeMap_.insert(std::make_pair(".jpeg", "Content-Type: image/jpeg;"));
+	typeMap_.insert(std::make_pair(".png", "Content-Type: image/png;"));
+	typeMap_.insert(std::make_pair(".bmp", "Content-Type: image/bmp;"));
+	typeMap_.insert(std::make_pair(".txt", "Content-Type: plain/txt;"));
+	typeMap_.insert(std::make_pair(".log", "Content-Type: plain/txt;"));
+	typeMap_.insert(std::make_pair(".htm", "Content-Type: plain/htm;"));
+	typeMap_.insert(std::make_pair(".html", "Content-Type: plain/htm;"));
+	typeMap_.insert(std::make_pair(".exe", "Content-Type: application/X-exectype-1;"));
 }
 
 CurlSmtp::~CurlSmtp()
@@ -388,33 +399,10 @@ void CurlSmtp::make_send_message()
 			if (it1->second.length() > 3)
 			{ // long enough for an extension
 				std::string typ(it1->second.substr(it1->second.length() - 4, 4));
-				if (typ == ".gif")
-				{ // gif format presumably
-					send_buffer_.push_back("Content-Type: image/gif;");
-				}
-				else if (typ == ".jpg" || typ == "jpeg")
-				{ // j-peg format presumably
-					send_buffer_.push_back("Content-Type: image/jpg;");
-				}
-				else if (typ == ".txt" || typ == ".log")
-				{ // text format presumably
-					send_buffer_.push_back("Content-Type: plain/txt;");
-				}
-				else if (typ == ".bmp")
-				{ // windows bitmap format presumably
-					send_buffer_.push_back("Content-Type: image/bmp;");
-				}
-				else if (typ == ".htm" || typ == "html")
-				{ // hypertext format presumably
-					send_buffer_.push_back("Content-Type: plain/htm;");
-				}
-				else if (typ == ".png")
-				{ // portable network graphic format presumably
-					send_buffer_.push_back("Content-Type: image/png;");
-				}
-				else if (typ == ".exe")
-				{ // application
-					send_buffer_.push_back("Content-Type: application/X-exectype-1;");
+				
+				if (typeMap_.count(typ) > 0)
+				{
+					send_buffer_.push_back(typeMap_[typ]);
 				}
 				else
 				{ // add other types
